@@ -1,0 +1,53 @@
+Regiões:
+Mapping
+LOAD * Inline [
+Sigla, Região
+S, Sul
+SE, Sudeste
+CO, Centro Oeste
+NE, Nordeste
+N, Norte
+];
+
+Fato:
+LOAD
+    ApplyMap('Regiões',"Regiao - Sigla") as DES_Nome_Região,
+    "Estado - Sigla" as DES_Região_Sigla,
+    Municipio as DES_Municipio,
+    Revenda as DES_Revenda,
+    "CNPJ da Revenda" as DES_CNPJ_Revenda,
+    "Nome da Rua" as DES_Nome_Rua,
+    "Numero Rua" as VAL_Numero_Rua,
+    Complemento as DES_Complemento,
+    "Nome da Rua" &', '&"Numero Rua" as DES_Endereço,
+    Bairro as DES_Bairro,
+    Left(Cep, 5)&Right(Cep, 3) as VAL_Cep,
+    Produto as DES_Produto,
+    "Data da Coleta" as DAT_Data,
+    Num(Num#("Valor de Venda"),'##,##') as QTD_Valor_Venda,
+    Num(Num#("Valor de Compra"),'##,##') as QTD_Valor_Compra,
+    "Unidade de Medida" as DES_Unidade_Medida,
+    Bandeira as DES_Bandeira
+FROM [$(vFile)/QVD_E_Fato_Combustiveis.qvd](qvd);
+
+Store Fato into [$(vFile)/QVD_T_Fato_Combustiveis.qvd];
+
+DROP TABLE Fato;
+
+[Calendario]:
+LOAD 
+"Data da Coleta",
+Date( "Data da Coleta", 'DD/MM/YYYY' ) as  DAT_Data, 
+Num( Day( "Data da Coleta" ), '00' ) as Dia, 
+Month( "Data da Coleta" ) as Mes,
+Num(Month( "Data da Coleta" ), '00') as Mes_Num,
+Year( "Data da Coleta" )&Num( Month( "Data da Coleta" ), 00 ) as [Ano Mes],
+Year( "Data da Coleta" ) as Ano, 
+Week( "Data da Coleta" ) as Semana, 
+WeekDay( "Data da Coleta" ) as [Dia Semana], 
+If( WeekDay( "Data da Coleta" )= 'dom', 0, 1 ) as DiaUtil
+FROM [$(vFile)/QVD_E_Fato_Combustiveis.qvd](qvd);
+
+STORE Calendario into [$(vFile)/QVD_T_Calendario_Combustiveis.qvd](qvd);;
+
+DROP TABLE Calendario ;

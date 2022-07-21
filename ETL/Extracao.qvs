@@ -1,0 +1,41 @@
+SET vFile = 'lib://DataFiles';
+
+SET ErrorMode = 0;
+SET ScriptErrorCount = 0;
+
+For each File in FileList('$(vFile)/*.csv')
+
+Extract:
+LOAD
+    "Regiao - Sigla",
+    "Estado - Sigla",
+    Municipio,
+    Revenda,
+    "CNPJ da Revenda",
+    "Nome da Rua",
+    "Numero Rua",
+    Complemento,
+    Bairro,
+    Cep,
+    Produto,
+    "Data da Coleta",
+    "Valor de Venda",
+    "Valor de Compra",
+    "Unidade de Medida",
+    Bandeira
+FROM $(File)
+(txt, utf8, embedded labels, delimiter is ';', msq);
+
+
+if ScriptErrorCount>0 then
+
+SET ErrorMode = 0;
+SET ScriptErrorCount = 0;
+
+End If
+
+NEXT File;
+
+Store Extract into [$(vFile)/QVD_E_Fato_Combustiveis.qvd](qvd);
+
+Drop Table Extract;

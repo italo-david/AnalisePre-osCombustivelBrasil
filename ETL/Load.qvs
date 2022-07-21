@@ -1,0 +1,31 @@
+Fato:
+LOAD
+    DES_Nome_Região as Região,
+    DES_Região_Sigla as Estado,
+    DES_Municipio as Cidade,
+    DES_Revenda as Posto,
+    DES_Endereço as Endereço,
+    DES_Bairro as Bairro,
+    VAL_Cep as CEP,
+    DES_Produto as Produto,
+    DAT_Data as Data,
+    QTD_Valor_Venda as "Valor da Venda",
+    QTD_Valor_Compra as "Valor de Compra",
+    DES_Bandeira as Bandeira
+FROM [lib://DataFiles/QVD_T_Fato_Combustiveis.qvd]
+(qvd);
+
+Calendário:
+LOAD
+    DAT_Data as Data,
+    Dia,
+    Mes,
+    Mes_Num,
+    "Ano Mes",
+    Ano,
+    Semana,
+    "Dia Semana",
+    DiaUtil
+FROM [lib://DataFiles/QVD_T_Calendario_Combustiveis.qvd]
+(qvd);
+
